@@ -47,18 +47,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bitmap = null;
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
             Set<String> string = extras.keySet();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            img.setImageBitmap(imageBitmap);
+            bitmap = (Bitmap) extras.get("data");
+            img.setImageBitmap(bitmap);
         }
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             Bundle extras = data.getExtras();
             Set<String> string = extras.keySet();
 
             Uri imageUri = data.getData();
-            Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
             } catch (IOException e) {
@@ -66,5 +66,10 @@ public class MainActivity extends AppCompatActivity {
             }
             img.setImageBitmap(bitmap);
         }
+        processBitmap(bitmap);
+    }
+
+    private void processBitmap(Bitmap bitmap){
+
     }
 }
