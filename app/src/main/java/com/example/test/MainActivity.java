@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE = 2;
 
-
-
     ImageView img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void doSomething(View view) {
         switch(view.getId()){
-            case R.id.button2:
+            case R.id.galleryButton:
                 Intent gallery =
                         new Intent(Intent.ACTION_PICK,
                                 android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                 startActivityForResult(gallery, PICK_IMAGE);
                 break;
-            case R.id.button3:
+            case R.id.cameraButton:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);

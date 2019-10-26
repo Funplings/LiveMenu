@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/implicitIntent"
+        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -20,7 +20,7 @@
         app:layout_constraintVertical_bias="0.114" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/galleryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="doSomething"
@@ -34,7 +34,7 @@
         app:layout_constraintVertical_bias="0.471" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/cameraButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="doSomething"
