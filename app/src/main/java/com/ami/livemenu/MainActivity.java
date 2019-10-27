@@ -1,10 +1,12 @@
 package com.ami.livemenu;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE = 2;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    AlertDialog.Builder dialogBuilder;
 
     Uri imageUri;
     @Override
@@ -65,10 +68,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Bitmap bitmap = null;
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+        if(resultCode != RESULT_OK){
+            return;
+        }
+        if(requestCode == REQUEST_IMAGE_CAPTURE){
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(
                         getContentResolver(), imageUri);
@@ -76,9 +82,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ImageHolder.holder.setBitmap(bitmap);
         }
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+        if (requestCode == PICK_IMAGE) {
             Uri imageUri = data.getData();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -86,12 +91,47 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        goToMenu(bitmap);
+        ImageHolder.holder.addBitmap(bitmap);
+        dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setMessage("Would you like to add any more pages?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(requestCode == REQUEST_IMAGE_CAPTURE){
+                            if(isStoragePermissionGranted()){
+                                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                                StrictMode.setVmPolicy(builder.build());
+                                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                                File file = new File(Environment.getExternalStorageDirectory(), "/your_name_folder/a" + "/photo_" + timeStamp + ".png");
+                                imageUri = Uri.fromFile(file);
+
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                            }
+                        }
+                        else if(requestCode == PICK_IMAGE){
+                            Intent gallery =
+                                    new Intent(Intent.ACTION_PICK,
+                                            android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                            startActivityForResult(gallery, PICK_IMAGE);
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToMenu();
+                    }
+                });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("Continue?");
+        alert.show();
     }
 
-    private void goToMenu(Bitmap bitmap){
+    private void goToMenu(){
         Intent i1 = new Intent(this, MenuActivity.class);
-        ImageHolder.holder.setBitmap(bitmap);
         startActivity(i1);
     }
 

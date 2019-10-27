@@ -42,8 +42,9 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         getSupportActionBar().setTitle("Menu List");
-        Bitmap bitmap = ImageHolder.holder.getBitmap();
-        processBitmap(bitmap);
+        for(Bitmap bitmap : ImageHolder.holder.getBitmaps()){
+            processBitmap(bitmap);
+        }
 
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -51,6 +52,12 @@ public class MenuActivity extends AppCompatActivity {
 //        menuView = (ImageView) findViewById(R.id.menuView);
 //        menuView.setImageBitmap(bitmap);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ImageHolder.holder.clean();
     }
 
     private void processBitmap(Bitmap bitmap){
@@ -96,8 +103,9 @@ public class MenuActivity extends AppCompatActivity {
 
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
-
-        foodList = new ArrayList<>();
+        if(foodList == null){
+            foodList = new ArrayList<>();
+        }
         if (blocks.size() == 0) {
             Log.i(null, "No text found");
             return;
