@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,23 +29,26 @@ import java.util.List;
 import java.util.Set;
 
 public class MenuActivity extends AppCompatActivity {
-    ImageView menuView;
-    Set<Object> ItemButtons = new HashSet<>();
-    private ConstraintLayout layout;
-    Button b;
+//    ImageView menuView;
+//    Set<Object> ItemButtons = new HashSet<>();
+//    private ConstraintLayout layout;
+//    Button b;
     List<String> foodList;
+    ListView menuList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        layout = findViewById(R.id.menuLayout);
         Bitmap bitmap = ImageHolder.holder.getBitmap();
-        menuView = (ImageView) findViewById(R.id.menuView);
-        menuView.setImageBitmap(bitmap);
         processBitmap(bitmap);
+
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        layout = findViewById(R.id.menuLayout);
+//        menuView = (ImageView) findViewById(R.id.menuView);
+//        menuView.setImageBitmap(bitmap);
+
     }
 
     private void processBitmap(Bitmap bitmap){
@@ -57,6 +62,9 @@ public class MenuActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(FirebaseVisionText texts) {
                                 processTextRecognitionResult(texts);
+                                menuList = (ListView) findViewById(R.id.menuList);
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MenuActivity.this, R.layout.list, foodList);
+                                menuList.setAdapter(adapter);
                             }
                         }
                 )
@@ -72,6 +80,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+
         foodList = new ArrayList<>();
         if (blocks.size() == 0) {
             Log.i(null, "No text found");

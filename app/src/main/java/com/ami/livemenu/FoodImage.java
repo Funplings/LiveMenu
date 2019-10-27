@@ -29,7 +29,7 @@ public class FoodImage extends AppCompatActivity {
         int height = (int) (dm.heightPixels * .8);
         getWindow().setLayout(width, height);
         layout = findViewById(R.id.foodLayout);
-        Drawable d = getResources().getDrawable(R.drawable.ic_camera);
+        Drawable d = getResources().getDrawable(R.drawable.camera_icon);
         Bitmap bitmap =  drawableToBitmap(d);
         img.setImageBitmap(bitmap);
 //        final ViewTreeObserver observer = layout.getViewTreeObserver();
