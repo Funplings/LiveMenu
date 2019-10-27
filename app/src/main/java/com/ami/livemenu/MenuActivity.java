@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,6 +25,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +60,19 @@ public class MenuActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ImageHolder.holder.clean();
+        clearPictures();
+    }
+
+    private void clearPictures(){
+        File dir = new File(Environment.getExternalStorageDirectory()+"/LiveMenu/a");
+        if (dir.isDirectory())
+        {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++)
+            {
+                new File(dir, children[i]).delete();
+            }
+        }
     }
 
     private void processBitmap(Bitmap bitmap){

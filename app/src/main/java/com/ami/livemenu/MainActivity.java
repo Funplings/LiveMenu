@@ -67,14 +67,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        boolean fromCamera = false;
         Bitmap bitmap = null;
         if(resultCode != RESULT_OK){
             return;
         }
         if(requestCode == REQUEST_IMAGE_CAPTURE){
+            fromCamera = true;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(
                         getContentResolver(), imageUri);
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        final boolean fc = fromCamera;
         ImageHolder.holder.addBitmap(bitmap);
         dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setMessage("Would you like to add any more pages?")
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        goToMenu();
+                        goToMenu(fc);
                     }
                 });
         AlertDialog alert = dialogBuilder.create();
@@ -130,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void goToMenu(){
+    private void goToMenu(boolean fromCamera){
         Intent i1 = new Intent(this, MenuActivity.class);
+        i1.putExtra("From Camera", fromCamera);
         startActivity(i1);
     }
 
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File file = new File(Environment.getExternalStorageDirectory(), "/your_name_folder/a" + "/photo_" + timeStamp + ".png");
+            File file = new File(Environment.getExternalStorageDirectory(), "/LiveMenu/a" + "/photo_" + timeStamp + ".png");
             imageUri = Uri.fromFile(file);
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
