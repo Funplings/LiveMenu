@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        getSupportActionBar().setTitle("Menu List");
         Bitmap bitmap = ImageHolder.holder.getBitmap();
         processBitmap(bitmap);
 
@@ -65,6 +67,20 @@ public class MenuActivity extends AppCompatActivity {
                                 menuList = (ListView) findViewById(R.id.menuList);
                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MenuActivity.this, R.layout.list, foodList);
                                 menuList.setAdapter(adapter);
+                                menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+//                                        Cursor cursor = (Cursor) menuList.getItemAtPosition(position);
+//                                        iD = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+//                                        //Toast.makeText(getActivity(), iD + "", Toast.LENGTH_LONG).show();
+                                        Intent result = new Intent(getApplicationContext(), ImageViewer.class);
+                                        result.putExtra("term", foodList.get(position));
+                                        // intent.putExtra("ID", iD);
+                                        startActivity(result);
+
+                                    }
+                                });
                             }
                         }
                 )
