@@ -45,19 +45,19 @@ public class MenuActivity extends AppCompatActivity {
 //    Button b;
     List<String> foodList;
     ListView menuList;
-    SyntaxEndpoint endpoint;
-    String query;
+//    SyntaxEndpoint endpoint;
+//    String query;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         getSupportActionBar().setTitle("Menu List");
-        query = getString(R.string.CloudAPIKey);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://language.googleapis.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        endpoint = retrofit.create(SyntaxEndpoint.class);
+//        query = getString(R.string.CloudAPIKey);
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://language.googleapis.com/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        endpoint = retrofit.create(SyntaxEndpoint.class);
         for(Bitmap bitmap : ImageHolder.holder.getBitmaps()){
             processBitmap(bitmap);
         }
