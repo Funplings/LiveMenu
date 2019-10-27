@@ -21,6 +21,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,8 @@ public class MenuActivity extends AppCompatActivity {
     Set<Object> ItemButtons = new HashSet<>();
     private ConstraintLayout layout;
     Button b;
+    List<String> foodList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +43,7 @@ public class MenuActivity extends AppCompatActivity {
         Bitmap bitmap = ImageHolder.holder.getBitmap();
         menuView = (ImageView) findViewById(R.id.menuView);
         menuView.setImageBitmap(bitmap);
-//        processBitmap(bitmap);
-        b = (Button) findViewById(R.id.popup);
-        b.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent i1 = new Intent(MenuActivity.this, FoodImage.class);
-                startActivity(i1);
-            }
-        });
+        processBitmap(bitmap);
     }
 
     private void processBitmap(Bitmap bitmap){
@@ -77,52 +72,18 @@ public class MenuActivity extends AppCompatActivity {
 
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+        foodList = new ArrayList<>();
         if (blocks.size() == 0) {
             Log.i(null, "No text found");
             return;
         }
-
-        // Clear items
-        for (Object item: ItemButtons) {
-            layout.removeView((View) item);
-        }
-        ItemButtons.clear();
 
         for (int i = 0; i < blocks.size(); i++) {
             List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
             for (int j = 0; j < lines.size(); j++) {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
                 for (int k = 0; k < elements.size(); k++) {
-
-                    // Get element
-                    FirebaseVisionText.Element elem = elements.get(k);
-                    // Get text
-                    final String rawText = elem.getText();
-
-                    // Get button position/size
-                    Rect textBox = elem.getBoundingBox();
-                    float posX = (float) ((textBox.left + textBox.right) / 2.0);
-                    float posY = (float) ((textBox.top + textBox.bottom) / 2.0);
-                    int width = textBox.width();
-                    int height = textBox.height();
-
-                    // Create button
-                    Button b1 = new Button(this);
-                    b1.setText(rawText);
-                    b1.setX(posX);
-                    b1.setY(posY);
-                    //b1.setLayoutParams(new ConstraintLayout.LayoutParams(width, height));
-
-                    // Let button onClick show images
-                    b1.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            Toast.makeText(getApplicationContext(), rawText, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    // Add button to set/layout
-                    ItemButtons.add(b1);
-                    layout.addView(b1);
+                    foodList.add(elements.get(k).getText());
                 }
             }
         }
