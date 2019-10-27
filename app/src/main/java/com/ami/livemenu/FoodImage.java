@@ -25,8 +25,8 @@ public class FoodImage extends AppCompatActivity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         img = (ImageView) findViewById(R.id.foodView);
-        int width = (int) (dm.widthPixels * .8);
-        int height = (int) (dm.heightPixels * .8);
+        int width = (int) (dm.widthPixels * .6);
+        int height = (int) (dm.heightPixels * .6);
         getWindow().setLayout(width, height);
         layout = findViewById(R.id.foodLayout);
         Drawable d = getResources().getDrawable(R.drawable.camera_icon);

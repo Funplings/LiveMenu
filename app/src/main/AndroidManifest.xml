@@ -18,8 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ImageViewer"
-            android:parentActivityName=".MenuActivity">
-        </activity>
+            android:theme="@style/FoodImageTheme"/>
         <activity
             android:name=".FoodImage"
             android:theme="@style/FoodImageTheme" />

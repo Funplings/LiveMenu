@@ -8,9 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="FoodImageTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="FoodImageTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
     </style>
 
 </resources>
