@@ -1,4 +1,4 @@
-package com.example.test;
+package com.ami.livemenu;
 
 import org.junit.Test;
 
