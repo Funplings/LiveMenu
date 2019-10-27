@@ -26,10 +26,17 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MenuActivity extends AppCompatActivity {
 //    ImageView menuView;
@@ -38,12 +45,19 @@ public class MenuActivity extends AppCompatActivity {
 //    Button b;
     List<String> foodList;
     ListView menuList;
-
+    SyntaxEndpoint endpoint;
+    String query;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         getSupportActionBar().setTitle("Menu List");
+        query = getString(R.string.CloudAPIKey);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://language.googleapis.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        endpoint = retrofit.create(SyntaxEndpoint.class);
         for(Bitmap bitmap : ImageHolder.holder.getBitmaps()){
             processBitmap(bitmap);
         }
@@ -85,7 +99,11 @@ public class MenuActivity extends AppCompatActivity {
                         new OnSuccessListener<FirebaseVisionText>() {
                             @Override
                             public void onSuccess(FirebaseVisionText texts) {
-                                processTextRecognitionResult(texts);
+                                try {
+                                    processTextRecognitionResult(texts);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 menuList = (ListView) findViewById(R.id.menuList);
                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MenuActivity.this, R.layout.list, foodList);
                                 menuList.setAdapter(adapter);
@@ -116,7 +134,7 @@ public class MenuActivity extends AppCompatActivity {
                         });
     }
 
-    private void processTextRecognitionResult(FirebaseVisionText texts) {
+    private void processTextRecognitionResult(FirebaseVisionText texts) throws IOException {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
         if(foodList == null){
             foodList = new ArrayList<>();
@@ -125,13 +143,44 @@ public class MenuActivity extends AppCompatActivity {
             Log.i(null, "No text found");
             return;
         }
-
+        SyntaxInput input = new SyntaxInput();
+        Document doc = new Document();
         for (int i = 0; i < blocks.size(); i++) {
             List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
             for (int j = 0; j < lines.size(); j++) {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
                 for (int k = 0; k < elements.size(); k++) {
-                    foodList.add(elements.get(k).getText());
+                    final String content = elements.get(k).getText();
+                    foodList.add(content);
+//                    doc.setContent(content);
+//                    input.setDocument(doc);
+//                    Call<SyntaxData> call = endpoint.getSyntaxData(input, query);
+//                    call.enqueue(new Callback<SyntaxData>(){
+//
+//                        @Override
+//                        public void onResponse(Call<SyntaxData> call, Response<SyntaxData> response) {
+////                            boolean verb = false;
+////                            boolean noun = false;
+////                            for(Token token : response.body().getTokens()){
+////                                if(!noun && token.getPartOfSpeech().getTag().compareTo("NOUN") == 0){
+////                                    noun = true;
+////                                }
+////                                else if(token.getPartOfSpeech().getTag().compareTo("VERB") == 0){
+////                                    verb = true;
+////                                    break;
+////                                }
+////                            }
+////                            if(!verb && noun){
+////                                foodList.add(content);
+////                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<SyntaxData> call, Throwable t) {
+//                            return;
+//                        }
+//                    });
+
                 }
             }
         }
