@@ -3,6 +3,7 @@ package com.ami.livemenu;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ public class MenuActivity extends AppCompatActivity {
     ImageView menuView;
     Set<Object> ItemButtons = new HashSet<>();
     private ConstraintLayout layout;
-
+    Button b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,15 @@ public class MenuActivity extends AppCompatActivity {
         Bitmap bitmap = ImageHolder.holder.getBitmap();
         menuView = (ImageView) findViewById(R.id.menuView);
         menuView.setImageBitmap(bitmap);
-        processBitmap(bitmap);
+//        processBitmap(bitmap);
+        b = (Button) findViewById(R.id.popup);
+        b.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent i1 = new Intent(MenuActivity.this, FoodImage.class);
+                startActivity(i1);
+            }
+        });
     }
 
     private void processBitmap(Bitmap bitmap){
