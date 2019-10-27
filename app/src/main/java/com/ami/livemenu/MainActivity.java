@@ -1,4 +1,4 @@
-package com.example.test;
+package com.ami.livemenu;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,5 +71,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void processBitmap(Bitmap bitmap){
 
+    }
+
+    private void runTextRecognition() {
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mSelectedImage);
+        FirebaseVisionTextRecognizer recognizer = FirebaseVision.getInstance()
+                .getOnDeviceTextRecognizer();
+        mTextButton.setEnabled(false);
+        recognizer.processImage(image)
+                .addOnSuccessListener(
+                        new OnSuccessListener<FirebaseVisionText>() {
+                            @Override
+                            public void onSuccess(FirebaseVisionText texts) {
+                                mTextButton.setEnabled(true);
+                                processTextRecognitionResult(texts);
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Task failed with an exception
+                                mTextButton.setEnabled(true);
+                                e.printStackTrace();
+                            }
+                        });
     }
 }
